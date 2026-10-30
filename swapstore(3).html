@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWAPSTORE — Exchange Products Freely</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Permanent+Marker&display=swap');
+
+:root{
+  --black:#0a0a08;
+  --paper:#f4f1ea;
+  --orange:#ff5c00;
+  --orange2:#ff7a1a;
+  --green:#8fdc00;
+  --green2:#aaff00;
+  --grey:#1a1a16;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--black);
+  color:var(--paper);
+  font-family:'Space Grotesk',sans-serif;
+  overflow-x:hidden;
+  position:relative;
+}
+/* ---- grunge overlay ---- */
+body::after{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;
+  z-index:50;
+  opacity:.09;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* ---- scanlines ---- */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;
+  z-index:51;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.25) 3px 4px);
+  mix-blend-mode:overlay;
+  opacity:.5;
+}
+
+h1,h2,h3,.anton{font-family:'Anton',sans-serif;letter-spacing:.01em;}
+.marker{font-family:'Permanent Marker',cursive;}
+
+/* ============ NAV ============ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;
+  background:linear-gradient(180deg,rgba(10,10,8,.95),rgba(10,10,8,.75));
+  backdrop-filter:blur(8px);
+  border-bottom:2px solid #262620;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--paper);
+}
+.logo-badge{
+  background:#171712;border:3px solid var(--orange);
+  clip-path:polygon(8% 0,100% 0,100% 70%,92% 100%,0 100%,0 30%);
+  padding:8px 16px 10px;
+  box-shadow:0 0 24px rgba(255,92,0,.45);
+}
+.logo-badge .anton{font-size:1.3rem;line-height:1;color:var(--paper);display:block;}
+.logo-badge .anton span{color:var(--orange);}
+.nav-links{display:flex;gap:26px;list-style:none;align-items:center;}
+.nav-links a{
+  color:var(--paper);text-decoration:none;font-weight:700;font-size:.85rem;
+  text-transform:uppercase;letter-spacing:.14em;position:relative;transition:.2s;
+}
+.nav-links a:hover{color:var(--green);}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;height:3px;width:0;background:var(--green);transition:.25s;}
+.nav-links a:hover::after{width:100%;}
+.btn-nav{
+  background:var(--orange);color:#0a0a08 !important;
+  padding:10px 22px;
+  clip-path:polygon(10% 0,100% 0,100% 65%,90% 100%,0 100%,0 35%);
+  font-family:'Archivo Black',sans-serif;
+}
+.btn-nav:hover{background:var(--green);color:#0a0a08;}
+.hamburger{display:none;background:none;border:none;color:var(--paper);font-size:1.6rem;cursor:pointer;}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:130px 6vw 60px;
+  position:relative;
+  background:
+    radial-gradient(60% 50% at 75% 40%,rgba(143,220,0,.14),transparent 60%),
+    radial-gradient(40% 40% at 15% 80%,rgba(255,92,0,.12),transparent 60%),
+    var(--black);
+  overflow:hidden;
+}
+.hero-grid-lines{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(70% 70% at 50% 40%,black,transparent);
+}
+.hero-kicker{
+  color:var(--green2);font-size:clamp(.8rem,1.4vw,1.05rem);
+  letter-spacing:.28em;text-transform:uppercase;font-weight:700;
+  margin-bottom:8px;
+}
+.hero h1{
+  font-size:clamp(3.4rem,11vw,9.5rem);
+  line-height:.9;text-transform:uppercase;
+  color:var(--paper);
+  text-shadow:4px 4px 0 rgba(0,0,0,.6);
+  position:relative;z-index:2;
+}
+.hero h1 .orange{color:var(--orange);text-shadow:0 0 40px rgba(255,92,0,.55),4px 4px 0 rgba(0,0,0,.6);}
+.hero h1 .stroke{
+  -webkit-text-stroke:2px var(--paper);color:transparent;
+}
+.hero-sub{
+  font-family:'Permanent Marker',cursive;
+  color:var(--green2);font-size:clamp(1.1rem,2.6vw,1.9rem);
+  transform:rotate(-2deg);margin-top:14px;
+  text-shadow:0 0 18px rgba(170,255,0,.4);
+}
+.hero-cta{display:flex;gap:18px;margin-top:38px;flex-wrap:wrap;z-index:2;}
+.btn{
+  font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+  font-size:.95rem;letter-spacing:.08em;text-decoration:none;
+  padding:16px 34px;cursor:pointer;border:none;transition:.2s;
+}
+.btn-orange{
+  background:var(--orange);color:#0a0a08;
+  clip-path:polygon(8% 0,100% 0,100% 68%,92% 100%,0 100%,0 32%);
+  box-shadow:0 0 30px rgba(255,92,0,.4);
+}
+.btn-orange:hover{background:var(--orange2);transform:translateY(-2px);}
+.btn-ghost{
+  background:transparent;color:var(--paper);
+  border:2px solid var(--green);box-shadow:inset 0 0 0 2px #0a0a08;
+}
+.btn-ghost:hover{background:var(--green);color:#0a0a08;}
+
+/* floating stickers */
+.sticker{
+  position:absolute;z-index:1;
+  filter:drop-shadow(0 10px 24px rgba(0,0,0,.6));
+  animation:floaty 6s ease-in-out infinite;
+}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--r,0deg));}50%{transform:translateY(-16px) rotate(var(--r,0deg));}}
+.stk1{top:16%;right:8%;--r:8deg;font-size:4rem;}
+.stk2{bottom:20%;right:20%;--r:-10deg;font-size:3rem;animation-delay:1.2s;}
+.stk3{top:34%;right:26%;--r:12deg;font-size:2.6rem;animation-delay:2s;}
+.stk4{bottom:14%;right:6%;--r:-6deg;font-size:3.4rem;animation-delay:.6s;}
+
+.qr-card{
+  position:absolute;right:6vw;bottom:8vh;z-index:3;
+  background:var(--paper);padding:12px;
+  transform:rotate(3deg);
+  box-shadow:0 0 40px rgba(0,0,0,.7),0 0 24px rgba(143,220,0,.25);
+}
+.qr-card canvas{display:block;}
+.qr-card p{color:#0a0a08;font-family:'Anton';font-size:.72rem;text-align:center;margin-top:6px;letter-spacing:.1em;}
+
+.marquee{
+  border-top:3px solid var(--orange);border-bottom:3px solid var(--orange);
+  background:var(--orange);
+  overflow:hidden;white-space:nowrap;transform:rotate(-1.2deg) scale(1.02);
+  margin-top:30px;position:relative;z-index:4;
+}
+.marquee-inner{
+  display:inline-block;animation:scroll 18s linear infinite;
+  font-family:'Anton';font-size:1.2rem;color:#0a0a08;
+  text-transform:uppercase;letter-spacing:.12em;padding:10px 0;
+}
+@keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ============ SECTIONS ============ */
+section{padding:90px 6vw;position:relative;}
+.sec-head{margin-bottom:44px;}
+.sec-kicker{color:var(--green2);text-transform:uppercase;letter-spacing:.3em;font-weight:700;font-size:.8rem;margin-bottom:6px;}
+.sec-title{font-size:clamp(2rem,5vw,3.6rem);text-transform:uppercase;line-height:.95;}
+.sec-title em{font-style:normal;color:var(--orange);}
+
+/* ============ FILTERS ============ */
+.toolbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:34px;}
+.search{
+  flex:1;min-width:220px;
+  background:#141410;border:2px solid #2c2c24;color:var(--paper);
+  padding:14px 18px;font-family:'Space Grotesk';font-size:1rem;
+  clip-path:polygon(3% 0,100% 0,100% 75%,97% 100%,0 100%,0 25%);
+}
+.search:focus{outline:none;border-color:var(--green);}
+.chip{
+  background:#171712;border:2px solid #33332a;color:var(--paper);
+  padding:10px 20px;font-family:'Archivo Black';font-size:.78rem;text-transform:uppercase;
+  cursor:pointer;letter-spacing:.06em;transition:.15s;
+  clip-path:polygon(8% 0,100% 0,100% 70%,92% 100%,0 100%,0 30%);
+}
+.chip:hover{border-color:var(--orange);}
+.chip.active{background:var(--orange);color:#0a0a08;border-color:var(--orange);}
+
+/* ============ PRODUCT GRID ============ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:26px;}
+.card{
+  background:linear-gradient(160deg,#1a1a15,#101009);
+  border:2px solid #2b2b22;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%);
+  position:relative;overflow:hidden;
+  transition:.25s;
+}
+.card:hover{border-color:var(--orange);transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.6),0 0 30px rgba(255,92,0,.25);}
+.card-img{
+  height:190px;display:flex;align-items:center;justify-content:center;
+  font-size:4.4rem;position:relative;
+  background:
+    radial-gradient(60% 60% at 50% 45%,var(--glow,rgba(255,92,0,.25)),transparent 70%),
+    repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0 8px,transparent 8px 16px),
+    #0d0d09;
+}
+.card-img .emoji{filter:drop-shadow(0 8px 20px rgba(0,0,0,.7));transform:rotate(-6deg);transition:.3s;}
+.card:hover .card-img .emoji{transform:rotate(6deg) scale(1.12);}
+.tag{
+  position:absolute;top:12px;left:-2px;
+  background:var(--green);color:#0a0a08;
+  font-family:'Archivo Black';font-size:.66rem;text-transform:uppercase;
+  padding:5px 12px 5px 10px;letter-spacing:.08em;
+  clip-path:polygon(0 0,100% 0,92% 100%,0 100%);
+}
+.tag.hot{background:var(--orange);}
+.card-body{padding:18px 18px 20px;}
+.card-title{font-family:'Anton';font-size:1.25rem;text-transform:uppercase;line-height:1.05;}
+.card-desc{color:#a8a89a;font-size:.86rem;margin-top:6px;line-height:1.45;}
+.want{
+  margin-top:12px;display:flex;align-items:center;gap:8px;
+  font-size:.8rem;color:var(--green2);font-weight:700;
+}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:.78rem;color:#c9c9bd;}
+.avatar{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Anton';font-size:.85rem;color:#0a0a08;
+  background:var(--av,#ff5c00);
+  border:2px solid #000;
+}
+.btn-offer{
+  background:var(--orange);color:#0a0a08;border:none;
+  font-family:'Archivo Black';font-size:.74rem;text-transform:uppercase;
+  padding:10px 18px;cursor:pointer;letter-spacing:.06em;
+  clip-path:polygon(10% 0,100% 0,100% 65%,90% 100%,0 100%,0 35%);
+  transition:.15s;
+}
+.btn-offer:hover{background:var(--green2);}
+
+/* ============ HOW IT WORKS ============ */
+.how{background:linear-gradient(180deg,transparent,rgba(143,220,0,.05),transparent);}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;counter-reset:step;}
+.step{
+  background:#14140f;border:2px dashed #3a3a2e;padding:30px 24px;
+  position:relative;transition:.2s;
+}
+.step:hover{border-color:var(--green);background:#17170f;}
+.step .num{
+  font-family:'Anton';font-size:3.4rem;color:var(--orange);
+  -webkit-text-stroke:1px var(--orange);color:transparent;
+  line-height:1;
+}
+.step h3{font-size:1.15rem;text-transform:uppercase;margin:12px 0 8px;color:var(--paper);}
+.step p{color:#a8a89a;font-size:.88rem;line-height:1.5;}
+.step .icon{font-size:2rem;margin-bottom:6px;display:block;}
+
+/* ============ STATS ============ */
+.stats{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;}
+.stat{
+  text-align:center;background:#171712;border:3px solid #2e2e24;
+  clip-path:polygon(8% 0,100% 0,100% 75%,92% 100%,0 100%,0 25%);
+  padding:28px 46px;min-width:190px;
+}
+.stat .num{font-family:'Anton';font-size:2.8rem;color:var(--orange);line-height:1;}
+.stat .lbl{text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;color:#a8a89a;margin-top:6px;}
+
+/* ============ MODAL ============ */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;
+  display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(4px);
+}
+.modal-bg.open{display:flex;}
+.modal{
+  background:#141410;border:3px solid var(--orange);
+  max-width:480px;width:100%;padding:34px;
+  clip-path:polygon(4% 0,100% 0,100% 94%,96% 100%,0 100%,0 6%);
+  position:relative;
+}
+.modal h3{font-size:1.6rem;text-transform:uppercase;color:var(--paper);}
+.modal .sub{color:var(--green2);font-family:'Permanent Marker';transform:rotate(-1.5deg);margin:6px 0 20px;}
+.modal label{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;color:#a8a89a;margin:16px 0 6px;}
+.modal input,.modal select,.modal textarea{
+  width:100%;background:#0d0d09;border:2px solid #33332a;color:var(--paper);
+  padding:12px 14px;font-family:'Space Grotesk';font-size:.95rem;
+}
+.modal input:focus,.modal textarea:focus,.modal select:focus{outline:none;border-color:var(--green);}
+.modal .btn-orange{width:100%;margin-top:24px;}
+.close-x{
+  position:absolute;top:12px;right:16px;background:none;border:none;
+  color:var(--paper);font-size:1.6rem;cursor:pointer;font-family:'Anton';
+}
+.close-x:hover{color:var(--orange);}
+
+/* ============ FOOTER ============ */
+footer{
+  border-top:3px solid var(--orange);
+  padding:60px 6vw 30px;
+  background:
+    radial-gradient(50% 60% at 85% 20%,rgba(143,220,0,.1),transparent 60%),
+    #0d0d0a;
+}
+.foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;}
+.foot-grid h4{font-family:'Anton';text-transform:uppercase;color:var(--orange);margin-bottom:14px;letter-spacing:.05em;}
+.foot-grid p,.foot-grid a{color:#a8a89a;font-size:.9rem;text-decoration:none;display:block;line-height:1.9;}
+.foot-grid a:hover{color:var(--green2);}
+.foot-bottom{
+  margin-top:50px;padding-top:20px;border-top:1px solid #26261e;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  color:#6a6a5e;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+}
+.socials a{display:inline-block;margin-right:14px;font-size:1.4rem;}
+.foot-badge{
+  display:inline-block;background:#171712;border:3px solid var(--orange);
+  clip-path:polygon(8% 0,100% 0,100% 70%,92% 100%,0 100%,0 30%);
+  padding:10px 22px;font-family:'Anton';font-size:1.4rem;color:var(--paper);
+  box-shadow:0 0 24px rgba(255,92,0,.35);
+}
+.foot-badge span{color:var(--orange);}
+
+/* toast */
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(120px);
+  background:var(--green);color:#0a0a08;font-family:'Archivo Black';
+  padding:14px 30px;text-transform:uppercase;font-size:.85rem;z-index:300;
+  clip-path:polygon(6% 0,100% 0,100% 70%,94% 100%,0 100%,0 30%);
+  transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* responsive */
+@media(max-width:860px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#0d0d0a;flex-direction:column;padding:24px;border-bottom:3px solid var(--orange);}
+  .nav-links.open{display:flex;}
+  .hamburger{display:block;}
+  .qr-card{display:none;}
+  .sticker{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <div class="logo-badge"><span class="anton">SWAP<span>STORE</span></span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#browse">Browse</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#stats">Community</a></li>
+    <li><a href="#browse" class="btn-nav" onclick="openModal()">+ List Item</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid-lines"></div>
+  <p class="hero-kicker">// No money. No middlemen. Just trades.</p>
+  <h1>
+    TRADE<br>
+    <span class="orange">ANYTHING</span><br>
+    <span class="stroke">WITH ANYONE</span>
+  </h1>
+  <p class="hero-sub">your product exchange plug — 100% free, forever</p>
+  <div class="hero-cta">
+    <a href="#browse" class="btn btn-orange">Start Swapping ↓</a>
+    <a href="#how" class="btn btn-ghost">How It Works</a>
+  </div>
+
+  <div class="sticker stk1">📦</div>
+  <div class="sticker stk2">🎧</div>
+  <div class="sticker stk3">🎮</div>
+  <div class="sticker stk4">👟</div>
+
+  <div class="qr-card">
+    <canvas id="qr" width="130" height="130"></canvas>
+    <p>SCAN · JOIN THE SWAP</p>
+  </div>
+
+  <div class="marquee">
+    <div class="marquee-inner" id="marquee">
+      FREE EXCHANGE ✦ NO CASH NEEDED ✦ TRADE WHAT YOU HAVE ✦ GET WHAT YOU WANT ✦ COMMUNITY POWERED ✦ ZERO FEES ✦
+      FREE EXCHANGE ✦ NO CASH NEEDED ✦ TRADE WHAT YOU HAVE ✦ GET WHAT YOU WANT ✦ COMMUNITY POWERED ✦ ZERO FEES ✦
+    </div>
+  </div>
+</header>
+
+<!-- BROWSE -->
+<section id="browse">
+  <div class="sec-head">
+    <p class="sec-kicker">// live offers</p>
+    <h2 class="sec-title">BROWSE <em>THE VAULT</em></h2>
+  </div>
+  <div class="toolbar">
+    <input class="search" id="search" type="text" placeholder="Search items... (e.g. sneakers, camera)" oninput="render()">
+    <button class="chip active" data-cat="all" onclick="setCat(this)">All</button>
+    <button class="chip" data-cat="tech" onclick="setCat(this)">Tech</button>
+    <button class="chip" data-cat="fashion" onclick="setCat(this)">Fashion</button>
+    <button class="chip" data-cat="gaming" onclick="setCat(this)">Gaming</button>
+    <button class="chip" data-cat="home" onclick="setCat(this)">Home</button>
+    <button class="chip" data-cat="media" onclick="setCat(this)">Media</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="sec-head">
+    <p class="sec-kicker">// dead simple</p>
+    <h2 class="sec-title">HOW IT <em>WORKS</em></h2>
+  </div>
+  <div class="steps">
+    <div class="step"><span class="num">01</span><span class="icon">📸</span><h3>Snap It</h3><p>Photograph what you own, write a short description and list it in under 60 seconds.</p></div>
+    <div class="step"><span class="num">02</span><span class="icon">🔍</span><h3>Find It</h3><p>Browse the vault or search for the exact item you've been hunting for.</p></div>
+    <div class="step"><span class="num">03</span><span class="icon">🤝</span><h3>Offer It</h3><p>Send a trade offer. The other person can accept, counter, or decline — no cash ever involved.</p></div>
+    <div class="step"><span class="num">04</span><span class="icon">📬</span><h3>Swap It</h3><p>Meet locally or ship safely with our swap guarantee. Rate your trader after.</p></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="sec-head" style="text-align:center;">
+    <p class="sec-kicker">// the movement</p>
+    <h2 class="sec-title">ALWAYS <em>AVAILABLE</em></h2>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="num" id="s1">0</div><div class="lbl">Items Swapped</div></div>
+    <div class="stat"><div class="num" id="s2">0</div><div class="lbl">Active Traders</div></div>
+    <div class="stat"><div class="num" id="s3">0</div><div class="lbl">Cities Covered</div></div>
+    <div class="stat"><div class="num" id="s4">0</div><div class="lbl">Fees — Ever</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-badge">SWAP<span>STORE</span></div>
+      <p style="margin-top:16px;">The free exchange marketplace. Your stuff has value — trade it, don't trash it.</p>
+    </div>
+    <div>
+      <h4>Marketplace</h4>
+      <a href="#browse">Browse Items</a>
+      <a href="#" onclick="openModal();return false;">List an Item</a>
+      <a href="#how">Trading Rules</a>
+      <a href="#">Swap Guarantee</a>
+    </div>
+    <div>
+      <h4>Community</h4>
+      <a href="#">Trader Ratings</a>
+      <a href="#">Local Meetups</a>
+      <a href="#">Success Stories</a>
+      <a href="#">Safety Tips</a>
+    </div>
+    <div>
+      <h4>Get The App</h4>
+      <p>Scan the QR in the hero to jump straight into the swap.</p>
+      <div class="socials" style="margin-top:10px;">
+        <a href="#">📷</a><a href="#">🐦</a><a href="#">📩</a><a href="#">☁️</a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Swapstore — Trade freely</span>
+    <span>Made for swappers, by swappers</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close-x" onclick="closeModal()">✕</button>
+    <h3>LIST YOUR <span style="color:var(--orange)">ITEM</span></h3>
+    <p class="sub">free listing, free trading, free everything</p>
+    <label>Item Name</label>
+    <input id="fName" type="text" placeholder="e.g. Vintage Denim Jacket">
+    <label>Category</label>
+    <select id="fCat">
+      <option value="tech">Tech</option><option value="fashion">Fashion</option>
+      <option value="gaming">Gaming</option><option value="home">Home</option><option value="media">Media</option>
+    </select>
+    <label>Description</label>
+    <textarea id="fDesc" rows="3" placeholder="Condition, size, brand, story..."></textarea>
+    <label>What do you want in return?</label>
+    <input id="fWant" type="text" placeholder="e.g. Air Jordans size 43">
+    <button class="btn btn-orange" onclick="submitItem()">Post Swap Offer →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Offer sent ✓</div>
+
+<script>
+/* ---------- DATA ---------- */
+const items = [
+  {name:"PS5 Console + 2 Controllers", cat:"gaming", emoji:"🎮", desc:"Slim model, 1TB, mint condition. Barely used, comes with box.", want:"Nintendo Switch OLED", user:"Kwame D.", tag:"hot", glow:"rgba(255,92,0,.35)"},
+  {name:"Jordan 1 Retro High OG", cat:"fashion", emoji:"👟", desc:"Size 43, 'Chicago' colourway. Worn twice, kept in a box since.", want:"Yeezy 350 or vintage tee bundle", user:"Ama S.", tag:"", glow:"rgba(143,220,0,.3)"},
+  {name:"Sony A6000 Camera Kit", cat:"tech", emoji:"📷", desc:"Mirrorless, 16-50mm lens, 2 batteries + bag. Shutter count low.", want:"MacBook Air (any recent year)", user:"Yaw K.", tag:"hot", glow:"rgba(255,122,26,.3)"},
+  {name:"Mechanical Keyboard 65%", cat:"tech", emoji:"⌨️", desc:"Hot-swappable, RGB, tactile switches. Thocky and clean.", want:"Studio headphones", user:"Efua M.", tag:"", glow:"rgba(170,255,0,.28)"},
+  {name:"Vinyl Record Collection", cat:"media", emoji:"🎵", desc:"40+ records: hip-hop, highlife, afrobeats classics. All VG+.", want:"Bluetooth speaker", user:"Kofi A.", tag:"", glow:"rgba(255,92,0,.3)"},
+  {name:"Espresso Machine", cat:"home", emoji:"☕", desc:"Semi-automatic, descaled monthly. Cafe-grade shots at home.", want:"Standing desk or PS5 games", user:"Nana O.", tag:"", glow:"rgba(143,220,0,.3)"},
+  {name:"Denim Jacket (Vintage)", cat:"fashion", emoji:"🧥", desc:"90s oversized fit, perfect fades. One of one thrift find.", want:"Graphic hoodies size L", user:"Abena T.", tag:"hot", glow:"rgba(255,122,26,.3)"},
+  {name:"Gaming PC — RTX 3060", cat:"gaming", emoji:"🖥️", desc:"Ryzen 5, 16GB RAM, 1TB SSD. Runs everything at high settings.", want:"iPad Pro / camera gear", user:"Selasie G.", tag:"hot", glow:"rgba(170,255,0,.25)"},
+  {name:"Sneaker Cleaning Kit + 8 Pairs", cat:"fashion", emoji:"🧢", desc:"Starter resell/trade bundle. All cleaned and photographed.", want:"Anything streetwear", user:"Mensah P.", tag:"", glow:"rgba(255,92,0,.3)"},
+  {name:"Bookshelf + Reading Lamp", cat:"home", emoji:"📚", desc:"Solid oak shelf, warm LED lamp included. Pickup only.", want:"Plants or wall art", user:"Adjoa R.", tag:"", glow:"rgba(143,220,0,.28)"},
+  {name:"AirPods Pro (2nd Gen)", cat:"tech", emoji:"🎧", desc:"Active noise cancelling, all tips included, battery healthy.", want:"Smartwatch", user:"Fiifi L.", tag:"", glow:"rgba(255,122,26,.3)"},
+  {name:"Film Camera + 5 Rolls", cat:"media", emoji:"🎞️", desc:"Point-and-shoot 35mm, tested and light-sealed.", want:"Digital compact camera", user:"Esi B.", tag:"hot", glow:"rgba(170,255,0,.25)"},
+];
+const avColors=["#ff5c00","#8fdc00","#ffd000","#00c2ff","#ff3d7f","#a3ff00"];
+
+let cat="all";
+function setCat(btn){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  cat=btn.dataset.cat;
+  render();
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const grid=document.getElementById('grid');
+  grid.innerHTML="";
+  const filtered=items.filter(i=>(cat==="all"||i.cat===cat)&&(i.name.toLowerCase().includes(q)||i.desc.toLowerCase().includes(q)));
+  if(!filtered.length){grid.innerHTML='<p style="grid-column:1/-1;color:#6a6a5e;font-family:Anton;font-size:1.4rem;text-transform:uppercase;">Nothing here yet — be the first to list ✦</p>';return;}
+  filtered.forEach((it,idx)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <div class="card-img" style="--glow:${it.glow}">
+        ${it.tag?`<span class="tag ${it.tag}">${it.tag==='hot'?'🔥 HOT':'NEW'}</span>`:''}
+        <span class="emoji">${it.emoji}</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">${it.name}</h3>
+        <p class="card-desc">${it.desc}</p>
+        <div class="want">⇄ wants: ${it.want}</div>
+        <div class="card-foot">
+          <div class="user-chip"><span class="avatar" style="--av:${avColors[idx%avColors.length]}">${it.user[0]}</span>${it.user}</div>
+          <button class="btn-offer" onclick="offer('${it.name.replace(/'/g,"\\'")}')">Offer Swap</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ---------- MODAL ---------- */
+function openModal(){document.getElementById('modalBg').classList.add('open');document.getElementById('navLinks').classList.remove('open');}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+function submitItem(){
+  const name=document.getElementById('fName').value.trim();
+  const desc=document.getElementById('fDesc').value.trim();
+  const want=document.getElementById('fWant').value.trim();
+  const c=document.getElementById('fCat').value;
+  const emojis={tech:"📱",fashion:"👕",gaming:"🎮",home:"🛋️",media:"📀"};
+  if(!name){toast("Give it a name first ✍️");return;}
+  items.unshift({name,cat:c,emoji:emojis[c],desc:desc||"Freshly listed — no description yet.",want:want||"Open to offers",user:"You",tag:"",glow:"rgba(170,255,0,.3)"});
+  closeModal();
+  render();
+  toast("Item listed — let's swap ✓");
+  document.getElementById('fName').value=document.getElementById('fDesc').value=document.getElementById('fWant').value="";
+}
+function offer(n){toast("Swap offer sent for "+n+" ✓");}
+let toastT;
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ---------- FAKE QR ---------- */
+(function(){
+  const c=document.getElementById('qr'),x=c.getContext('2d'),N=25,s=c.width/N;
+  x.fillStyle="#f4f1ea";x.fillRect(0,0,c.width,c.height);
+  x.fillStyle="#0a0a08";
+  const finder=(fx,fy)=>{x.fillRect(fx*s,fy*s,7*s,7*s);x.fillStyle="#f4f1ea";x.fillRect((fx+1)*s,(fy+1)*s,5*s,5*s);x.fillStyle="#0a0a08";x.fillRect((fx+2)*s,(fy+2)*s,3*s,3*s);};
+  let seed=42;const rnd=()=>{seed=(seed*1103515245+12345)%2147483648;return seed/2147483648;};
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+    const inF=(i<8&&j<8)||(i>N-9&&j<8)||(i<8&&j>N-9);
+    if(!inF&&rnd()>.55)x.fillRect(i*s,j*s,s,s);
+  }
+  finder(0,0);finder(N-7,0);finder(0,N-7);
+})();
+
+/* ---------- COUNTERS ---------- */
+function count(el,target,suffix){
+  let v=0;const step=Math.max(1,Math.ceil(target/80));
+  const iv=setInterval(()=>{v+=step;if(v>=target){v=target;clearInterval(iv);}el.textContent=v.toLocaleString()+suffix;},22);
+}
+count(document.getElementById('s1'),48210,"");
+count(document.getElementById('s2'),12600,"+");
+count(document.getElementById('s3'),340,"+");
+count(document.getElementById('s4'),0,"");
+
+render();
+</script>
+</body>
+</html>
